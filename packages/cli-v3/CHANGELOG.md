@@ -1,5 +1,19 @@
 # trigger.dev
 
+## 4.8.11
+
+### Patch Changes
+
+- Upgrade the CLI's `zod` dependency to 4.6.7. ([`a093664ec`](https://github.com/triggerdotdev/trigger.dev/commit/a093664ec1c4f07b2430b497eca1445630f33405))
+- The MCP server's `trigger_task` tool now accepts `metadata`, `idempotencyKeyTTL`, `concurrencyKey`, `concurrency`, `debounce`, `lockToVersion` and `priority`, matching the options you can pass when triggering from the SDK or the dashboard. Calls without them behave as before. ([`ea9405ed6`](https://github.com/triggerdotdev/trigger.dev/commit/ea9405ed624126adb741eb3667c8f9a7b1219cb8))
+
+  `trigger_task` no longer sets a 10 minute ttl on its own when you pass any option, including existing ones such as `tags`. A run now gets the ttl you pass, otherwise the task's ttl, otherwise 10 minutes in dev and the server's maximum ttl elsewhere (14 days on Trigger.dev Cloud; no expiry on a self-hosted server without one), and a ttl longer than the server's maximum is capped at it. Pass `ttl: "10m"` to keep the old behaviour.
+
+- Updated dependencies:
+  - `@trigger.dev/core@4.8.11`
+  - `@trigger.dev/build@4.8.11`
+  - `@trigger.dev/schema-to-json@4.8.11`
+
 ## 4.8.10
 
 ### Patch Changes

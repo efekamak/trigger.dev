@@ -1,5 +1,15 @@
 # @trigger.dev/sdk
 
+## 4.8.11
+
+### Patch Changes
+
+- Fix the type of the handle returned by `batch.triggerByTask()`. It promised `runs`, `isCached` and `idempotencyKey`, which were never returned, so code like `results.runs[0]` compiled but threw at runtime. The handle is now typed as what it returns: `batchId`, `runCount` and `publicAccessToken`; use `batch.retrieve(batchId)` to get the run IDs, or `batch.triggerByTaskAndWait()` for typed results. ([`80fc05e8a`](https://github.com/triggerdotdev/trigger.dev/commit/80fc05e8a7a647509b26a22e65dc198b94eccdc9))
+- Fix `AgentChat` returning another turn's reply, or several replies joined together, instead of the answer to the message you sent: for example when continuing a chat without a saved `lastEventId`, sending two messages in a row, or when a run answers earlier messages first. Agents now mark where each turn starts and where steered messages join one on the output stream, so redeploy them on this version; with an older agent, a reply `AgentChat` can't match to your message is delivered when its turn completes instead of streamed. Custom readers of the session output stream must skip control records they don't recognise. A send aborted before its stream starts now asks the agent to stop. ([`77fb02dd6`](https://github.com/triggerdotdev/trigger.dev/commit/77fb02dd6cb08134bb5a6c911e59161e55c2b0b3))
+- The bundled chat agent skills now use `claude-sonnet-5-5` in their examples. They used `claude-sonnet-4-5`, which Anthropic retires on November 30, 2026, so agents following the skills would have generated code that stops working. ([`59dc6636b`](https://github.com/triggerdotdev/trigger.dev/commit/59dc6636b39147c1297984050181facbf9420bd5))
+- Updated dependencies:
+  - `@trigger.dev/core@4.8.11`
+
 ## 4.8.10
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # internal-platform
 
+## 4.8.11
+
+### Patch Changes
+
+- Fix the type of the handle returned by `batch.triggerByTask()`. It promised `runs`, `isCached` and `idempotencyKey`, which were never returned, so code like `results.runs[0]` compiled but threw at runtime. The handle is now typed as what it returns: `batchId`, `runCount` and `publicAccessToken`; use `batch.retrieve(batchId)` to get the run IDs, or `batch.triggerByTaskAndWait()` for typed results. ([`80fc05e8a`](https://github.com/triggerdotdev/trigger.dev/commit/80fc05e8a7a647509b26a22e65dc198b94eccdc9))
+- Fix `AgentChat` returning another turn's reply, or several replies joined together, instead of the answer to the message you sent: for example when continuing a chat without a saved `lastEventId`, sending two messages in a row, or when a run answers earlier messages first. Agents now mark where each turn starts and where steered messages join one on the output stream, so redeploy them on this version; with an older agent, a reply `AgentChat` can't match to your message is delivered when its turn completes instead of streamed. Custom readers of the session output stream must skip control records they don't recognise. A send aborted before its stream starts now asks the agent to stop. ([`77fb02dd6`](https://github.com/triggerdotdev/trigger.dev/commit/77fb02dd6cb08134bb5a6c911e59161e55c2b0b3))
+- Fix run metadata changes sometimes reaching the API only when the run finished, so realtime subscribers and parent runs didn't see progress while the task was still running. This also fixes a metadata `append` or `increment` occasionally being applied twice at the end of a run, and a new run that reused the previous run's process sometimes seeing that run's metadata values. ([`eea6b1740`](https://github.com/triggerdotdev/trigger.dev/commit/eea6b174096ae9ec3706734f61f13e48f3ff8b8d))
+
 ## 4.8.10
 
 ### Patch Changes
